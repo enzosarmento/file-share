@@ -1,3 +1,5 @@
+import org.gradle.api.file.DuplicatesStrategy
+import org.gradle.jvm.tasks.Jar
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -127,5 +129,25 @@ tasks.register<JavaExec>("runDesktopServer") {
         configurations.getByName("desktopRuntimeClasspath")
     )
     standardInput = System.`in`
+}
+
+// Gera JAR executavel independente para o Servidor Desktop (Headless/CLI).
+tasks.register<Jar>("packageDesktopServerJar") {
+    group = "distribution"
+    description = "Empacota o Servidor Desktop Independente em um JAR executavel."
+    archiveBaseName.set("fileshare-server")
+    archiveClassifier.set("all")
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes["Main-Class"] = "br.edu.fileshare.desktop.server.ServerMainKt"
+    }
+    val desktopCompilation = kotlin.targets.getByName("desktop").compilations.getByName("main")
+    from(desktopCompilation.output.allOutputs)
+    from({
+        configurations.getByName("desktopRuntimeClasspath")
+            .filter { it.name.endsWith(".jar") }
+            .map { zipTree(it) }
+    })
+    exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA", "META-INF/INDEX.LIST")
 }
 
