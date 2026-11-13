@@ -8,6 +8,6 @@ object ProjectInfo {
     const val PROJECT_NAME: String = "FileShare"
     const val PROTOCOL_NAME: String = "FSAP"
     const val PROTOCOL_VERSION: String = "1.0"
-    const val CURRENT_MILESTONE: String = "M1 - Concluida"
+    const val CURRENT_MILESTONE: String = "M2 - Concluida"
 }
 
