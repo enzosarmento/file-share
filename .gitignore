@@ -1,0 +1,37 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+!**/src/commonMain/**/build/
+!**/src/desktopMain/**/build/
+!**/src/androidMain/**/build/
+
+# Android / IntelliJ IDEA / Fleet / Antigravity local state
+.idea/
+*.iml
+*.ipr
+*.iws
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Kotlin
+.kotlin/
+
+# OS specific
+.DS_Store
+Thumbs.db
+*~
+
+# Temporary transfer artifacts and logs
+*.part
+*.tmp
+logs/
+
