@@ -114,3 +114,4 @@ class ManualIpConnectViewModelTest {
         assertEquals(peer, connectedPeer)
     }
 }
+
