@@ -92,6 +92,7 @@ class DesktopNioFileSource(
  */
 class DesktopNioFileSink(
     targetDirectory: Path,
+    private val usableSpaceProvider: (Path) -> Long = { dir -> Files.getFileStore(dir).usableSpace },
 ) : FileSink {
 
     val targetDirectory: Path = targetDirectory.toAbsolutePath().normalize()
@@ -105,7 +106,7 @@ class DesktopNioFileSink(
 
     override suspend fun availableStorageBytes(): Long = withContext(Dispatchers.IO) {
         ensureDirectoriesExist()
-        Files.getFileStore(this@DesktopNioFileSink.targetDirectory).usableSpace
+        usableSpaceProvider(this@DesktopNioFileSink.targetDirectory)
     }
 
     override suspend fun openPartSession(
@@ -119,7 +120,7 @@ class DesktopNioFileSink(
         val safeFileToken = sanitizeIdentifier(fileId, "fileId")
 
         ensureDirectoriesExist()
-        val usable = Files.getFileStore(targetDirectory).usableSpace
+        val usable = usableSpaceProvider(targetDirectory)
         if (expectedSizeBytes > 0L && usable < expectedSizeBytes) {
             throw FsapProtocolException(
                 errorCode = FsapErrorCode.INSUFFICIENT_STORAGE,
