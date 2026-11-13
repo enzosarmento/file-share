@@ -17,7 +17,7 @@
 | `TASK-INF-003` | Logging estruturado e container de dependências KMP | 2. Configuração e Infraestrutura | M1 | P1 | Baixa | `TASK-INF-001` | `DONE` |
 | `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `DONE` |
 | `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `DONE` |
-| `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `TODO` |
+| `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `DONE` |
 | `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `DONE` |
 | `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `TODO` |
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `TODO` |
@@ -205,7 +205,7 @@
   - Qualquer transição não permitida (ex: `PENDING_APPROVAL` → `COMPLETED` ou saída de estado terminal) é bloqueada e lança `InvalidStateTransitionException`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/protocol/statemachine/`
 - **Testes necessários:** Testes exaustivos de matriz de transição válida x inválida em `commonTest` (`TC-FSAP-023`).
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-FSAP-004` — Implementação do catálogo padronizado de erros (`FsapErrorCode`) e envelope `ERROR`
 - **ID único:** `TASK-FSAP-004`

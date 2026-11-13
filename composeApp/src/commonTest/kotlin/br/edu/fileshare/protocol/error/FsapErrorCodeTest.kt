@@ -75,3 +75,4 @@ class FsapErrorCodeTest {
         assertFalse(decoded.payload.recoverable)
     }
 }
+
