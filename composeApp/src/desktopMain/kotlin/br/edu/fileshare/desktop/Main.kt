@@ -14,10 +14,12 @@ import br.edu.fileshare.ui.FileShareApp
 import br.edu.fileshare.ui.components.IncomingTransferApprovalDialogHost
 import br.edu.fileshare.ui.components.ManualIpConnectButton
 import br.edu.fileshare.ui.components.ManualIpConnectDialogHost
+import br.edu.fileshare.ui.components.TransferProgressScreen
 import br.edu.fileshare.ui.viewmodel.FileShareMainViewModel
 import br.edu.fileshare.ui.viewmodel.IncomingApprovalViewModel
 import br.edu.fileshare.ui.viewmodel.MainTab
 import br.edu.fileshare.ui.viewmodel.ManualIpConnectViewModel
+import br.edu.fileshare.ui.viewmodel.TransferProgressViewModel
 
 /**
  * Ponto de entrada da aplicacao grafica Compose Desktop (`TASK-DCLI-001`..`TASK-DCLI-006`).
@@ -48,6 +50,16 @@ fun main() = application {
         )
     }
 
+    val transferProgressViewModel = remember(runtime, uiScope) {
+        TransferProgressViewModel(
+            snapshotsFlow = runtime.transferCoordinator.progressTracker.transfers,
+            cancelPort = { transferId, reason ->
+                runtime.transferCoordinator.cancelTransfer(transferId, reason)
+            },
+            scope = uiScope,
+        )
+    }
+
     LaunchedEffect(mainViewModel) {
         mainViewModel.startNode()
     }
@@ -71,6 +83,9 @@ fun main() = application {
             viewModel = mainViewModel,
             manualConnectTrigger = {
                 ManualIpConnectButton(onClick = manualIpViewModel::openDialog)
+            },
+            transfersContent = {
+                TransferProgressScreen(viewModel = transferProgressViewModel)
             },
             overlayDialogs = {
                 ManualIpConnectDialogHost(viewModel = manualIpViewModel)
