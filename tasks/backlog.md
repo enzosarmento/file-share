@@ -44,7 +44,7 @@
 | `TASK-XFER-001` | Portas `FileSource`/`FileSink` e streaming 64 KB + SHA-256 | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-FSAP-001` | `DONE` |
 | `TASK-XFER-002` | `FsapHttpClient` para `TRANSFER_REQUEST` e `ACCEPT`/`REJECT` | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-XFER-003` | Upload streaming `TRANSFER_CONTENT` e `TRANSFER_COMPLETE` | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-XFER-001`, `TASK-XFER-002` | `DONE` |
-| `TASK-XFER-004` | `TransferProgressTracker` concorrente com throttling (100 ms) | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-XFER-003`, `TASK-FSAP-003` | `TODO` |
+| `TASK-XFER-004` | `TransferProgressTracker` concorrente com throttling (100 ms) | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-XFER-003`, `TASK-FSAP-003` | `DONE` |
 | `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `TODO` |
 | `TASK-XFER-006` | Tratamento de desconexão abrupta e timeout de stream (15 s) | 8. Transferência de Arquivos | M6 | P0 | Média | `TASK-XFER-004`, `TASK-DSRV-005` | `TODO` |
 | `TASK-SEC-001` | `FileNameSanitizer` contra Path Traversal e não-sobrescrita | 9. Segurança | M1 | P0 | Baixa | `TASK-FSAP-005` | `DONE` |
@@ -646,7 +646,7 @@
   - Cálculo preciso de percentual e velocidade tanto para arquivo único quanto para lotes de múltiplos arquivos (`TC-FSAP-016`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/transfer/TransferCoordinator.kt`
 - **Testes necessários:** Caso `TC-FSAP-016` em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-XFER-005` — Mecanismo de cancelamento cooperativo bilateral (`TRANSFER_CANCEL`)
 - **ID único:** `TASK-XFER-005`
