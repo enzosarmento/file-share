@@ -33,7 +33,7 @@
 | `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `TODO` |
 | `TASK-DCLI-002` | Tela de listagem reativa de dispositivos (`PeerRegistry`) | 6. Cliente Desktop | M3 | P0 | Média | `TASK-DCLI-001`, `TASK-DISC-004` | `TODO` |
 | `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `TODO` |
-| `TASK-DCLI-004` | Seletor nativo de arquivos Desktop e `DesktopNioFileStorage` | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-001` | `TODO` |
+| `TASK-DCLI-004` | Seletor nativo de arquivos Desktop e `DesktopNioFileStorage` | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-001` | `DONE` |
 | `TASK-DCLI-005` | Modal de confirmação explícita (Aceitar/Recusar) Desktop | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-DSRV-003` | `TODO` |
 | `TASK-DCLI-006` | Barra de progresso, métricas de velocidade e cancelamento | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-004`, `TASK-XFER-005` | `TODO` |
 | `TASK-AND-001` | `AndroidMulticastLockManager` e transporte UDP Android | 7. Cliente Android | M4 | P0 | Média | `TASK-DISC-001`, `TASK-DISC-003` | `TODO` |
@@ -469,7 +469,7 @@
   - Recepção grava em `.part` na pasta de downloads configurada e move para o arquivo final após verificação.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/desktopMain/kotlin/br/edu/fileshare/desktop/storage/`
 - **Testes necessários:** Testes de leitura, escrita `.part`, commit e colisão de nomes com `Files.createTempDirectory` em `desktopTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DCLI-005` — Modal de confirmação explícita de recebimento de arquivos (Aceitar / Recusar)
 - **ID único:** `TASK-DCLI-005`
