@@ -8,6 +8,7 @@ import br.edu.fileshare.core.logging.LogContext
 import br.edu.fileshare.core.time.Clock
 import br.edu.fileshare.core.time.SystemClock
 import br.edu.fileshare.network.server.routes.FsapTransferServerServices
+import br.edu.fileshare.network.server.routes.installTransferContentRoute
 import br.edu.fileshare.network.server.routes.installTransferPrepareRoute
 import br.edu.fileshare.protocol.FsapConstants
 import br.edu.fileshare.protocol.error.FsapErrorCode
@@ -91,6 +92,13 @@ fun Application.configureFsapServer(
         )
         transferServices?.let { services ->
             installTransferPrepareRoute(
+                localIdentity = config.identity,
+                services = services,
+                logger = logger,
+                clock = clock,
+                uuidGenerator = uuidGenerator,
+            )
+            installTransferContentRoute(
                 localIdentity = config.identity,
                 services = services,
                 logger = logger,
