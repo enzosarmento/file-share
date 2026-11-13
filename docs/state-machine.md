@@ -1,6 +1,6 @@
 # Máquinas de Estados Formais — Protocolo FSAP/1.0
 
-> **Status:** Especificação Normativa (Milestone M0 — Seção 5.3)  
+> **Status:** Especificação Normativa Aprovada (FSAP/1.0 — Seção 5.3)  
 > **Escopo:** Definição formal das máquinas de estados determinísticas para o Nó Local, Conexões com Pares Remotos e Sessões de Transferência de Arquivos.
 
 ---

@@ -1,6 +1,6 @@
 # ADR-006: Armazenamento Seguro (SAF / MediaStore) e Ciclo de Vida com `ForegroundService` no Android
 
-- **Status:** Proposta Técnica (Pendente de Aprovação da Equipe antes da M4)
+- **Status:** Aprovada (`TASK-ARC-002` — Ratificada para implementação M4+)
 - **Data:** 2026-11-12
 - **Contexto:** Milestone M0 — Planejamento e Arquitetura
 

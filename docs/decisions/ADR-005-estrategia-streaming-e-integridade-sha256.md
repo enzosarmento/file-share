@@ -1,6 +1,6 @@
 # ADR-005: Estratégia de Streaming Binário em Chunks (64 KB), Arquivos `.part` e Integridade SHA-256
 
-- **Status:** Proposta Técnica (Pendente de Aprovação da Equipe antes da M2)
+- **Status:** Aprovada (`TASK-ARC-002` — Ratificada para implementação M2+)
 - **Data:** 2026-11-12
 - **Contexto:** Milestone M0 — Planejamento e Arquitetura
 

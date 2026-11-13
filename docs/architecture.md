@@ -214,7 +214,7 @@ Todas as decisões estruturais estão registradas em `docs/decisions/`:
 - [ADR-001: Adoção de Kotlin Multiplatform e Compose Multiplatform](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-001-adocao-kmp-e-compose-multiplatform.md) — **Aprovada**
 - [ADR-002: Separação entre Cliente GUI e Servidor Desktop Independente](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-002-separacao-cliente-gui-e-servidor-desktop.md) — **Aprovada**
 - [ADR-003: Arquitetura Híbrida UDP Multicast e HTTP/TCP](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-003-arquitetura-hibrida-udp-multicast-e-http-tcp.md) — **Aprovada**
-- [ADR-004: Escolha de Ktor CIO para HTTP/TCP e `java.net.MulticastSocket` para UDP](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-004-escolha-ktor-vs-java-net-sockets.md) — **Proposta Técnica (Pendente de Aprovação da Equipe)**
-- [ADR-005: Estratégia de Streaming em Chunks e Integridade SHA-256](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-005-estrategia-streaming-e-integridade-sha256.md) — **Proposta Técnica (Pendente de Aprovação da Equipe)**
-- [ADR-006: Armazenamento Segura e Ciclo de Vida no Android](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-006-armazenamento-e-ciclo-de-vida-android.md) — **Proposta Técnica (Pendente de Aprovação da Equipe)**
+- [ADR-004: Escolha de Ktor CIO para HTTP/TCP e `java.net.MulticastSocket` para UDP](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-004-escolha-ktor-vs-java-net-sockets.md) — **Aprovada**
+- [ADR-005: Estratégia de Streaming em Chunks e Integridade SHA-256](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-005-estrategia-streaming-e-integridade-sha256.md) — **Aprovada**
+- [ADR-006: Armazenamento Segura e Ciclo de Vida no Android](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/decisions/ADR-006-armazenamento-e-ciclo-de-vida-android.md) — **Aprovada**
 

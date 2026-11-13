@@ -1,6 +1,6 @@
 # Catálogo Oficial de Mensagens — Protocolo FSAP/1.0
 
-> **Status:** Especificação Normativa (Milestone M0 — Seções 5.4 e 5.5)  
+> **Status:** Especificação Normativa Aprovada (FSAP/1.0 — Seções 5.4 e 5.5)  
 > **Escopo:** Definição semântica, sintática, regras de validação, estados associados e exemplos de payloads válidos e inválidos para todas as 12 mensagens do protocolo FSAP/1.0.
 
 ---

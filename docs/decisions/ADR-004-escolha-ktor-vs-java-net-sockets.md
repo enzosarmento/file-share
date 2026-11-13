@@ -1,6 +1,6 @@
 # ADR-004: Escolha de Ktor (CIO Engine) para HTTP/TCP e `java.net.MulticastSocket` para UDP
 
-- **Status:** Proposta Técnica (Pendente de Aprovação da Equipe antes da M1)
+- **Status:** Aprovada (`TASK-ARC-002` — Ratificada para implementação M1+)
 - **Data:** 2026-11-12
 - **Contexto:** Milestone M0 — Planejamento e Arquitetura
 

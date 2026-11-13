@@ -1,6 +1,6 @@
 # Backlog Geral e por Domínio Funcional — FileShare
 
-> **Status Global:** `47 Tasks` registradas — **Todas com Status Inicial `TODO`** (Nenhuma task executada na etapa M0, conforme Seções 7 e 11).  
+> **Status Global:** `47 Tasks` registradas — Acompanhamento atualizado continuamente conforme conclusão e validação das Milestones M0–M6.  
 > **Atribuição:** Sem atribuição nominal. A equipe de 4 integrantes alocará as tasks conforme as trilhas paralelas definidas em [dependency-graph.md](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/tasks/dependency-graph.md).
 
 ---
@@ -9,8 +9,8 @@
 
 | ID | Título Resumido | Domínio Funcional | Milestone | Prioridade | Complexidade | Dependências | Status |
 | :--- | :--- | :--- | :---: | :---: | :---: | :--- | :---: |
-| `TASK-ARC-001` | Revisão e aprovação da especificação FSAP/1.0 | 1. Arquitetura e Documentação | M0 | P0 | Baixa | *(Nenhuma)* | `TODO` |
-| `TASK-ARC-002` | Ratificação das ADRs pendentes (ADR-004 a ADR-006) | 1. Arquitetura e Documentação | M0 | P0 | Baixa | `TASK-ARC-001` | `TODO` |
+| `TASK-ARC-001` | Revisão e aprovação da especificação FSAP/1.0 | 1. Arquitetura e Documentação | M0 | P0 | Baixa | *(Nenhuma)* | `DONE` |
+| `TASK-ARC-002` | Ratificação das ADRs pendentes (ADR-004 a ADR-006) | 1. Arquitetura e Documentação | M0 | P0 | Baixa | `TASK-ARC-001` | `DONE` |
 | `TASK-ARC-003` | Consolidação do relatório acadêmico final | 1. Arquitetura e Documentação | M6 | P1 | Média | `TASK-TEST-005` | `TODO` |
 | `TASK-INF-001` | Validação do ambiente KMP/Android SDK na equipe | 2. Configuração e Infraestrutura | M0 | P0 | Baixa | `TASK-ARC-002` | `TODO` |
 | `TASK-INF-002` | CLI e empacotamento do Servidor Desktop Independente | 2. Configuração e Infraestrutura | M1 | P0 | Baixa | `TASK-INF-001` | `TODO` |
@@ -75,7 +75,7 @@
   - Portas padrão (`53317` TCP e `53318` UDP) e endereço multicast (`239.255.70.83`) ratificados.
 - **Arquivos ou módulos potencialmente envolvidos:** `docs/protocol-fsap.md`, `docs/protocol-messages.md`, `docs/state-machine.md`, `docs/error-codes.md`
 - **Testes necessários:** Execução de `./scripts/check-structure.sh` com código de saída `0`.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-ARC-002` — Ratificação das ADRs pendentes (ADR-004, ADR-005 e ADR-006) e limites de módulos
 - **ID único:** `TASK-ARC-002`
@@ -91,7 +91,7 @@
   - Acordo sobre a estrutura de pacotes sob `br.edu.fileshare`.
 - **Arquivos ou módulos potencialmente envolvidos:** `docs/decisions/ADR-004-*.md`, `docs/decisions/ADR-005-*.md`, `docs/decisions/ADR-006-*.md`, `docs/decisions/README.md`
 - **Testes necessários:** Verificação de links e consistência documental.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-ARC-003` — Consolidação do relatório acadêmico final e documentação de entrega
 - **ID único:** `TASK-ARC-003`

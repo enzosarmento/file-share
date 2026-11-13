@@ -1,6 +1,6 @@
 # Fluxos Completos de Comunicação — Protocolo FSAP/1.0
 
-> **Status:** Especificação Normativa (Milestone M0 — Seção 5.6)  
+> **Status:** Especificação Normativa Aprovada (FSAP/1.0 — Seção 5.6)  
 > **Escopo:** Diagramas de sequência formais em Mermaid e análise de estados, mensagens, resultados e falhas para os 10 cenários operacionais do FileShare.
 
 ---
