@@ -12,18 +12,29 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
+@OptIn(ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     jvmToolchain(17)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
+    applyDefaultHierarchyTemplate {
+        common {
+            group("jvmCommon") {
+                withAndroidTarget()
+                withJvm()
+            }
+        }
+    }
 
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
     jvm("desktop") {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
