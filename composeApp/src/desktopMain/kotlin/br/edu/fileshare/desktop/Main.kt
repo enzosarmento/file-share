@@ -11,9 +11,12 @@ import androidx.compose.ui.window.rememberWindowState
 import br.edu.fileshare.ProjectInfo
 import br.edu.fileshare.desktop.runtime.DesktopAppRuntime
 import br.edu.fileshare.ui.FileShareApp
+import br.edu.fileshare.ui.components.IncomingTransferApprovalDialogHost
 import br.edu.fileshare.ui.components.ManualIpConnectButton
 import br.edu.fileshare.ui.components.ManualIpConnectDialogHost
 import br.edu.fileshare.ui.viewmodel.FileShareMainViewModel
+import br.edu.fileshare.ui.viewmodel.IncomingApprovalViewModel
+import br.edu.fileshare.ui.viewmodel.MainTab
 import br.edu.fileshare.ui.viewmodel.ManualIpConnectViewModel
 
 /**
@@ -34,6 +37,14 @@ fun main() = application {
             connectPort = { ip, port -> runtime.connectByManualIp(ip, port) },
             scope = uiScope,
             onConnected = { peer -> mainViewModel.selectPeer(peer.identity.deviceId) },
+        )
+    }
+    val incomingApprovalViewModel = remember(runtime, uiScope, mainViewModel) {
+        IncomingApprovalViewModel(
+            coordinator = runtime.approvalCoordinator,
+            scope = uiScope,
+            clock = runtime.clock,
+            onAccepted = { mainViewModel.selectTab(MainTab.TRANSFERS) },
         )
     }
 
@@ -63,6 +74,7 @@ fun main() = application {
             },
             overlayDialogs = {
                 ManualIpConnectDialogHost(viewModel = manualIpViewModel)
+                IncomingTransferApprovalDialogHost(viewModel = incomingApprovalViewModel)
             },
         )
     }
