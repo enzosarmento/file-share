@@ -12,7 +12,7 @@
 | `TASK-ARC-001` | Revisão e aprovação da especificação FSAP/1.0 | 1. Arquitetura e Documentação | M0 | P0 | Baixa | *(Nenhuma)* | `DONE` |
 | `TASK-ARC-002` | Ratificação das ADRs pendentes (ADR-004 a ADR-006) | 1. Arquitetura e Documentação | M0 | P0 | Baixa | `TASK-ARC-001` | `DONE` |
 | `TASK-ARC-003` | Consolidação do relatório acadêmico final | 1. Arquitetura e Documentação | M6 | P1 | Média | `TASK-TEST-005` | `TODO` |
-| `TASK-INF-001` | Validação do ambiente KMP/Android SDK na equipe | 2. Configuração e Infraestrutura | M0 | P0 | Baixa | `TASK-ARC-002` | `TODO` |
+| `TASK-INF-001` | Validação do ambiente KMP/Android SDK na equipe | 2. Configuração e Infraestrutura | M0 | P0 | Baixa | `TASK-ARC-002` | `DONE` |
 | `TASK-INF-002` | CLI e empacotamento do Servidor Desktop Independente | 2. Configuração e Infraestrutura | M1 | P0 | Baixa | `TASK-INF-001` | `TODO` |
 | `TASK-INF-003` | Logging estruturado e container de dependências KMP | 2. Configuração e Infraestrutura | M1 | P1 | Baixa | `TASK-INF-001` | `TODO` |
 | `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `TODO` |
@@ -125,7 +125,7 @@
   - Comandos `./gradlew :composeApp:desktopTest` e `./gradlew :composeApp:assembleDebug` executam com `BUILD SUCCESSFUL`.
 - **Arquivos ou módulos potencialmente envolvidos:** `build.gradle.kts`, `composeApp/build.gradle.kts`, `gradle/libs.versions.toml`
 - **Testes necessários:** Execução de `ProjectInfoTest`, `DesktopEnvironmentTest` e `AndroidEnvironmentTest`.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-INF-002` — Configuração de argumentos CLI e empacotamento do Servidor Desktop Independente
 - **ID único:** `TASK-INF-002`
