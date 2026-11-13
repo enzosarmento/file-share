@@ -43,7 +43,7 @@
 | `TASK-AND-005` | Fluxo completo de envio/recebimento Android com notificações | 7. Cliente Android | M5 | P0 | Alta | `TASK-AND-004`, `TASK-XFER-005` | `TODO` |
 | `TASK-XFER-001` | Portas `FileSource`/`FileSink` e streaming 64 KB + SHA-256 | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-FSAP-001` | `DONE` |
 | `TASK-XFER-002` | `FsapHttpClient` para `TRANSFER_REQUEST` e `ACCEPT`/`REJECT` | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
-| `TASK-XFER-003` | Upload streaming `TRANSFER_CONTENT` e `TRANSFER_COMPLETE` | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-XFER-001`, `TASK-XFER-002` | `TODO` |
+| `TASK-XFER-003` | Upload streaming `TRANSFER_CONTENT` e `TRANSFER_COMPLETE` | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-XFER-001`, `TASK-XFER-002` | `DONE` |
 | `TASK-XFER-004` | `TransferProgressTracker` concorrente com throttling (100 ms) | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-XFER-003`, `TASK-FSAP-003` | `TODO` |
 | `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `TODO` |
 | `TASK-XFER-006` | Tratamento de desconexão abrupta e timeout de stream (15 s) | 8. Transferência de Arquivos | M6 | P0 | Média | `TASK-XFER-004`, `TASK-DSRV-005` | `TODO` |
@@ -631,7 +631,7 @@
   - Falha em qualquer arquivo do lote interrompe o envio e transita para `FAILED`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/client/FsapHttpClient.kt`
 - **Testes necessários:** Casos `TC-FSAP-014` e `TC-FSAP-015`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-XFER-004` — Coordenador de progresso de transferência em tempo real (`TransferProgressTracker`)
 - **ID único:** `TASK-XFER-004`
