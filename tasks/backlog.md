@@ -35,7 +35,7 @@
 | `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `DONE` |
 | `TASK-DCLI-004` | Seletor nativo de arquivos Desktop e `DesktopNioFileStorage` | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-001` | `DONE` |
 | `TASK-DCLI-005` | Modal de confirmação explícita (Aceitar/Recusar) Desktop | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-DSRV-003` | `DONE` |
-| `TASK-DCLI-006` | Barra de progresso, métricas de velocidade e cancelamento | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-004`, `TASK-XFER-005` | `TODO` |
+| `TASK-DCLI-006` | Barra de progresso, métricas de velocidade e cancelamento | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-004`, `TASK-XFER-005` | `DONE` |
 | `TASK-AND-001` | `AndroidMulticastLockManager` e transporte UDP Android | 7. Cliente Android | M4 | P0 | Média | `TASK-DISC-001`, `TASK-DISC-003` | `TODO` |
 | `TASK-AND-002` | Armazenamento Android via SAF (`ContentResolver`) e `MediaStore` | 7. Cliente Android | M4 | P0 | Alta | `TASK-XFER-001` | `TODO` |
 | `TASK-AND-003` | `FsapForegroundService` (`dataSync`) e permissões Android | 7. Cliente Android | M4 | P0 | Alta | `TASK-AND-001`, `TASK-DSRV-005` | `TODO` |
@@ -499,7 +499,7 @@
   - Barra de progresso atualiza suavemente durante a transferência e botão "Cancelar" interrompe a operação em andamento.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/ui/screens/TransferProgressScreen.kt`
 - **Testes necessários:** Teste unitário de formatação de métricas e estados de UI em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ---
 
