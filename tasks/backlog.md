@@ -16,7 +16,7 @@
 | `TASK-INF-002` | CLI e empacotamento do Servidor Desktop Independente | 2. Configuração e Infraestrutura | M1 | P0 | Baixa | `TASK-INF-001` | `DONE` |
 | `TASK-INF-003` | Logging estruturado e container de dependências KMP | 2. Configuração e Infraestrutura | M1 | P1 | Baixa | `TASK-INF-001` | `DONE` |
 | `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `DONE` |
-| `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `TODO` |
+| `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `DONE` |
 | `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `TODO` |
 | `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `TODO` |
 | `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `TODO` |
@@ -189,7 +189,7 @@
   - Todos os exemplos JSON de `docs/protocol-messages.md` são parseados com sucesso pelos DTOs criados.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/protocol/model/`
 - **Testes necessários:** Testes de contrato para cada uma das 12 mensagens em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-FSAP-003` — Implementação das máquinas de estados formais (`LocalNode`, `PeerConnection`, `Transfer`)
 - **ID único:** `TASK-FSAP-003`
