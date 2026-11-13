@@ -22,7 +22,7 @@
 | `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `DONE` |
 | `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `DONE` |
-| `TASK-DISC-003` | Listener UDP Multicast com filtro de loopback e jitter | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-005` | `TODO` |
+| `TASK-DISC-003` | Listener UDP Multicast com filtro de loopback e jitter | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-005` | `DONE` |
 | `TASK-DISC-004` | `PeerRegistry` concorrente com `STALE` e expiração TTL | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-003`, `TASK-DISC-003` | `TODO` |
 | `TASK-DISC-005` | Conexão Manual por IP via handshake TCP `IDENTIFY` | 4. Descoberta UDP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-DSRV-001` | `DONE` |
 | `TASK-DSRV-001` | Motor HTTP Server Ktor CIO independente e rota `IDENTIFY` | 5. Servidor Desktop | M1 | P0 | Média | `TASK-INF-002`, `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
@@ -287,7 +287,7 @@
   - Pacotes corrompidos não derrubam a coroutine do listener (`TC-FSAP-003`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/discovery/DiscoveryListener.kt`
 - **Testes necessários:** Casos `TC-FSAP-002` e `TC-FSAP-003` em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DISC-004` — Implementação da `PeerRegistry` concorrente com controle `STALE` e expiração por TTL (18 s)
 - **ID único:** `TASK-DISC-004`
