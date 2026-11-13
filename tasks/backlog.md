@@ -30,7 +30,7 @@
 | `TASK-DSRV-003` | Endpoint `TRANSFER_REQUEST`, aprovação (60s) e token | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-002`, `TASK-SEC-001`, `TASK-SEC-002` | `DONE` |
 | `TASK-DSRV-004` | Endpoint `TRANSFER_CONTENT`, escrita `.part` e SHA-256 | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-003`, `TASK-XFER-001` | `DONE` |
 | `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `DONE` |
-| `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `TODO` |
+| `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `DONE` |
 | `TASK-DCLI-002` | Tela de listagem reativa de dispositivos (`PeerRegistry`) | 6. Cliente Desktop | M3 | P0 | Média | `TASK-DCLI-001`, `TASK-DISC-004` | `TODO` |
 | `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `TODO` |
 | `TASK-DCLI-004` | Seletor nativo de arquivos Desktop e `DesktopNioFileStorage` | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-001` | `DONE` |
@@ -423,7 +423,7 @@
   - Aplicativo gráfico Desktop abre exibindo a identidade do dispositivo local e o estado atual do `LocalNodeStateMachine` sem chamadas diretas a sockets na camada de UI.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/ui/`, `desktopMain/kotlin/br/edu/fileshare/desktop/Main.kt`
 - **Testes necessários:** Teste de estado do ViewModel principal em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DCLI-002` — Tela de listagem de dispositivos disponíveis integrada com a `PeerRegistry`
 - **ID único:** `TASK-DCLI-002`

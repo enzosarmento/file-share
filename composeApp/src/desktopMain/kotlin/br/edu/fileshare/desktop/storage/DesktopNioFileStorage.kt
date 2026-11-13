@@ -93,6 +93,7 @@ class DesktopNioFileSource(
 class DesktopNioFileSink(
     targetDirectory: Path,
     private val usableSpaceProvider: (Path) -> Long = { dir -> Files.getFileStore(dir).usableSpace },
+    private val onCommitted: (StoredFileDescriptor) -> Unit = {},
 ) : FileSink {
 
     val targetDirectory: Path = targetDirectory.toAbsolutePath().normalize()
@@ -258,7 +259,7 @@ class DesktopNioFileSink(
                     locationUri = finalPath.toUri().toString(),
                     sizeBytes = totalBytesWritten,
                     sha256 = verifiedSha256,
-                )
+                ).also(onCommitted)
             }
         }
 
