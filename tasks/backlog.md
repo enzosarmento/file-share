@@ -27,7 +27,7 @@
 | `TASK-DISC-005` | Conexão Manual por IP via handshake TCP `IDENTIFY` | 4. Descoberta UDP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-DSRV-001` | `DONE` |
 | `TASK-DSRV-001` | Motor HTTP Server Ktor CIO independente e rota `IDENTIFY` | 5. Servidor Desktop | M1 | P0 | Média | `TASK-INF-002`, `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-DSRV-002` | Gerenciador de sessões concorrentes no Servidor Desktop | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-001`, `TASK-FSAP-003` | `DONE` |
-| `TASK-DSRV-003` | Endpoint `TRANSFER_REQUEST`, aprovação (60s) e token | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-002`, `TASK-SEC-001`, `TASK-SEC-002` | `TODO` |
+| `TASK-DSRV-003` | Endpoint `TRANSFER_REQUEST`, aprovação (60s) e token | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-002`, `TASK-SEC-001`, `TASK-SEC-002` | `DONE` |
 | `TASK-DSRV-004` | Endpoint `TRANSFER_CONTENT`, escrita `.part` e SHA-256 | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-003`, `TASK-XFER-001` | `TODO` |
 | `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `TODO` |
 | `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `TODO` |
@@ -371,7 +371,7 @@
   - Aprovação gera `transferToken` e retorna `200 OK`; recusa retorna `403`; ausência de decisão em 60 s retorna `408`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/server/routes/TransferPrepareRoute.kt`
 - **Testes necessários:** Casos `TC-FSAP-008`, `TC-FSAP-009`, `TC-FSAP-010`, `TC-FSAP-011` e `TC-FSAP-012`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DSRV-004` — Endpoint `PUT /fsap/v1/transfers/{id}/files/{fileId}/content` (`TRANSFER_CONTENT`)
 - **ID único:** `TASK-DSRV-004`

@@ -7,6 +7,8 @@ import br.edu.fileshare.core.logging.FsapLogger
 import br.edu.fileshare.core.logging.LogContext
 import br.edu.fileshare.core.time.Clock
 import br.edu.fileshare.core.time.SystemClock
+import br.edu.fileshare.network.server.routes.FsapTransferServerServices
+import br.edu.fileshare.network.server.routes.installTransferPrepareRoute
 import br.edu.fileshare.protocol.FsapConstants
 import br.edu.fileshare.protocol.error.FsapErrorCode
 import br.edu.fileshare.protocol.error.FsapErrorFactory
@@ -70,6 +72,7 @@ fun Application.configureFsapServer(
     clock: Clock = SystemClock,
     uuidGenerator: UuidGenerator = PlatformUuidGenerator,
     effectivePortProvider: () -> Int = { config.port },
+    transferServices: FsapTransferServerServices? = null,
     extraRoutes: Routing.() -> Unit = {},
 ) {
     install(ContentNegotiation) {
@@ -86,6 +89,15 @@ fun Application.configureFsapServer(
             uuidGenerator = uuidGenerator,
             effectivePortProvider = effectivePortProvider,
         )
+        transferServices?.let { services ->
+            installTransferPrepareRoute(
+                localIdentity = config.identity,
+                services = services,
+                logger = logger,
+                clock = clock,
+                uuidGenerator = uuidGenerator,
+            )
+        }
         extraRoutes()
     }
 }
@@ -325,6 +337,7 @@ class FsapHttpServer(
     private val logger: FsapLogger,
     private val clock: Clock = SystemClock,
     private val uuidGenerator: UuidGenerator = PlatformUuidGenerator,
+    private val transferServices: FsapTransferServerServices? = null,
     private val extraRoutes: Routing.() -> Unit = {},
 ) {
     private val lifecycleLock = PlatformLock()
@@ -349,6 +362,7 @@ class FsapHttpServer(
                     clock = clock,
                     uuidGenerator = uuidGenerator,
                     effectivePortProvider = { resolvedPort() },
+                    transferServices = transferServices,
                     extraRoutes = extraRoutes,
                 )
             }.also { engine = it }
