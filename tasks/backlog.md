@@ -48,7 +48,7 @@
 | `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `TODO` |
 | `TASK-XFER-006` | Tratamento de desconexão abrupta e timeout de stream (15 s) | 8. Transferência de Arquivos | M6 | P0 | Média | `TASK-XFER-004`, `TASK-DSRV-005` | `TODO` |
 | `TASK-SEC-001` | `FileNameSanitizer` contra Path Traversal e não-sobrescrita | 9. Segurança | M1 | P0 | Baixa | `TASK-FSAP-005` | `DONE` |
-| `TASK-SEC-002` | Gerador e validador de `transferToken` efêmero (`SecureRandom`) | 9. Segurança | M2 | P0 | Baixa | `TASK-FSAP-003` | `TODO` |
+| `TASK-SEC-002` | Gerador e validador de `transferToken` efêmero (`SecureRandom`) | 9. Segurança | M2 | P0 | Baixa | `TASK-FSAP-003` | `DONE` |
 | `TASK-SEC-003` | Limites de payload JSON (`256 KB`), cota de disco e overflow | 9. Segurança | M6 | P1 | Média | `TASK-DSRV-004` | `TODO` |
 | `TASK-SEC-004` | Transporte TLS opcional com fingerprint SHA-256 na LAN | 9. Segurança | M6 | P2 | Alta | `TASK-SEC-003` | `TODO` |
 | `TASK-TEST-001` | Testes unitários em `commonTest` (DTOs, estados, sanitização) | 10. Testes e Integração | M1 | P0 | Média | `TASK-FSAP-003`, `TASK-FSAP-005`, `TASK-SEC-001` | `DONE` |
@@ -711,7 +711,7 @@
   - Requisições sem token, com token de outra sessão ou com token expirado recebem `401 Unauthorized` (`FSAP-ERR-401-UNAUTHORIZED_TRANSFER` — `TC-FSAP-013`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/server/TransferTokenManager.kt`
 - **Testes necessários:** Caso `TC-FSAP-013`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-SEC-003` — Proteção contra exaustão de recursos (limites JSON, cota de disco e overflow de stream)
 - **ID único:** `TASK-SEC-003`
