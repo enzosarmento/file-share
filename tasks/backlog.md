@@ -26,7 +26,7 @@
 | `TASK-DISC-004` | `PeerRegistry` concorrente com `STALE` e expiração TTL | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-003`, `TASK-DISC-003` | `TODO` |
 | `TASK-DISC-005` | Conexão Manual por IP via handshake TCP `IDENTIFY` | 4. Descoberta UDP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-DSRV-001` | `DONE` |
 | `TASK-DSRV-001` | Motor HTTP Server Ktor CIO independente e rota `IDENTIFY` | 5. Servidor Desktop | M1 | P0 | Média | `TASK-INF-002`, `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
-| `TASK-DSRV-002` | Gerenciador de sessões concorrentes no Servidor Desktop | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-001`, `TASK-FSAP-003` | `TODO` |
+| `TASK-DSRV-002` | Gerenciador de sessões concorrentes no Servidor Desktop | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-001`, `TASK-FSAP-003` | `DONE` |
 | `TASK-DSRV-003` | Endpoint `TRANSFER_REQUEST`, aprovação (60s) e token | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-002`, `TASK-SEC-001`, `TASK-SEC-002` | `TODO` |
 | `TASK-DSRV-004` | Endpoint `TRANSFER_CONTENT`, escrita `.part` e SHA-256 | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-003`, `TASK-XFER-001` | `TODO` |
 | `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `TODO` |
@@ -354,7 +354,7 @@
   - Sessões que excedem `60 s` em `PENDING_APPROVAL` ou `30 s` ociosas em `ACCEPTED` transitam automaticamente para `FAILED`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/server/ServerTransferSessionManager.kt`
 - **Testes necessários:** Testes unitários concorrentes e de timeout em `commonTest`/`desktopTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DSRV-003` — Endpoint `POST /fsap/v1/transfers/prepare` (`TRANSFER_REQUEST`) com aprovação explícita
 - **ID único:** `TASK-DSRV-003`
