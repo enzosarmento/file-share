@@ -15,7 +15,7 @@
 | `TASK-INF-001` | Validação do ambiente KMP/Android SDK na equipe | 2. Configuração e Infraestrutura | M0 | P0 | Baixa | `TASK-ARC-002` | `DONE` |
 | `TASK-INF-002` | CLI e empacotamento do Servidor Desktop Independente | 2. Configuração e Infraestrutura | M1 | P0 | Baixa | `TASK-INF-001` | `DONE` |
 | `TASK-INF-003` | Logging estruturado e container de dependências KMP | 2. Configuração e Infraestrutura | M1 | P1 | Baixa | `TASK-INF-001` | `DONE` |
-| `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `TODO` |
+| `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `DONE` |
 | `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `TODO` |
 | `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `TODO` |
 | `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `TODO` |
@@ -174,7 +174,7 @@
   - `FsapEnvelope` serializa e deserializa campos `protocol`, `version`, `type`, `messageId`, `timestamp`, `senderId` e `payload` em UTF-8 exatamente conforme `docs/protocol-messages.md`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/protocol/model/FsapEnvelope.kt`, `DeviceIdentity.kt`
 - **Testes necessários:** Testes de serialização *round-trip* em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-FSAP-002` — Implementação de todos os DTOs de mensagens UDP e HTTP/TCP do FSAP/1.0
 - **ID único:** `TASK-FSAP-002`
