@@ -51,7 +51,7 @@
 | `TASK-SEC-002` | Gerador e validador de `transferToken` efêmero (`SecureRandom`) | 9. Segurança | M2 | P0 | Baixa | `TASK-FSAP-003` | `TODO` |
 | `TASK-SEC-003` | Limites de payload JSON (`256 KB`), cota de disco e overflow | 9. Segurança | M6 | P1 | Média | `TASK-DSRV-004` | `TODO` |
 | `TASK-SEC-004` | Transporte TLS opcional com fingerprint SHA-256 na LAN | 9. Segurança | M6 | P2 | Alta | `TASK-SEC-003` | `TODO` |
-| `TASK-TEST-001` | Testes unitários em `commonTest` (DTOs, estados, sanitização) | 10. Testes e Integração | M1 | P0 | Média | `TASK-FSAP-003`, `TASK-FSAP-005`, `TASK-SEC-001` | `TODO` |
+| `TASK-TEST-001` | Testes unitários em `commonTest` (DTOs, estados, sanitização) | 10. Testes e Integração | M1 | P0 | Média | `TASK-FSAP-003`, `TASK-FSAP-005`, `TASK-SEC-001` | `DONE` |
 | `TASK-TEST-002` | Testes de conformidade HTTP/TCP (`TC-FSAP-006` a `025`) | 10. Testes e Integração | M2 | P0 | Alta | `TASK-DSRV-005`, `TASK-XFER-005` | `TODO` |
 | `TASK-TEST-003` | Testes de descoberta UDP e TTL (`TC-FSAP-001` a `005`) | 10. Testes e Integração | M3 | P0 | Média | `TASK-DISC-004` | `TODO` |
 | `TASK-TEST-004` | Testes de estresse e múltiplas conexões (`TC-FSAP-026`) | 10. Testes e Integração | M6 | P1 | Média | `TASK-TEST-002`, `TASK-XFER-006` | `TODO` |
@@ -760,7 +760,7 @@
   - `./gradlew :composeApp:desktopTest` executa todos os testes unitários do protocolo com 100% de aprovação.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonTest/kotlin/br/edu/fileshare/protocol/`
 - **Testes necessários:** Casos `TC-FSAP-001`, `TC-FSAP-007`, `TC-FSAP-009`, `TC-FSAP-023` e `TC-FSAP-024`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-TEST-002` — Suíte de testes de conformidade HTTP/TCP (`TC-FSAP-006` a `TC-FSAP-025`)
 - **ID único:** `TASK-TEST-002`
