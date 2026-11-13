@@ -2,7 +2,7 @@
 
 > **Identificador do Protocolo:** `FSAP`  
 > **Versão da Especificação:** `1.0`  
-> **Status:** Especificação Normativa (Milestone M0 — Nenhuma implementação iniciada)  
+> **Status:** Aprovada (Especificação Normativa FSAP/1.0 Ratificada — `53317/TCP`, `53318/UDP`, Multicast `239.255.70.83`)  
 > **Documentos Complementares:**
 > - [Máquinas de Estados (`state-machine.md`)](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/state-machine.md)
 > - [Catálogo de Mensagens (`protocol-messages.md`)](file:///home/enzosarmento/Documents/2026.2/redes/fileshare/docs/protocol-messages.md)
