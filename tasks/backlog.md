@@ -23,7 +23,7 @@
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `DONE` |
 | `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `DONE` |
 | `TASK-DISC-003` | Listener UDP Multicast com filtro de loopback e jitter | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-005` | `DONE` |
-| `TASK-DISC-004` | `PeerRegistry` concorrente com `STALE` e expiração TTL | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-003`, `TASK-DISC-003` | `TODO` |
+| `TASK-DISC-004` | `PeerRegistry` concorrente com `STALE` e expiração TTL | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-003`, `TASK-DISC-003` | `DONE` |
 | `TASK-DISC-005` | Conexão Manual por IP via handshake TCP `IDENTIFY` | 4. Descoberta UDP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-DSRV-001` | `DONE` |
 | `TASK-DSRV-001` | Motor HTTP Server Ktor CIO independente e rota `IDENTIFY` | 5. Servidor Desktop | M1 | P0 | Média | `TASK-INF-002`, `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-DSRV-002` | Gerenciador de sessões concorrentes no Servidor Desktop | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-001`, `TASK-FSAP-003` | `DONE` |
@@ -303,7 +303,7 @@
   - Expiração ocorre exatamente após 18 s de silêncio (`TC-FSAP-004`) e remoção imediata no `BYE` (`TC-FSAP-005`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/discovery/PeerRegistry.kt`
 - **Testes necessários:** Casos `TC-FSAP-004` e `TC-FSAP-005` em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DISC-005` — Serviço de Conexão Manual por IP e verificação direta via mensagem `IDENTIFY` sobre TCP
 - **ID único:** `TASK-DISC-005`
