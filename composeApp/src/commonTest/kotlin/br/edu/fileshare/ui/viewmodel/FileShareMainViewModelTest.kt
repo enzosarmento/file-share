@@ -45,6 +45,7 @@ class FileShareMainViewModelTest {
         var lastStartedAlias: String? = null
         var lastStartedPort: Int? = null
         var stopCalls: Int = 0
+        var refreshCalls: Int = 0
         var lastSentTransfer: Pair<DiscoveredPeer, List<FileSource>>? = null
 
         override suspend fun startNode(alias: String, port: Int): Result<Int> {
@@ -60,6 +61,11 @@ class FileShareMainViewModelTest {
 
         override suspend fun stopNode() {
             stopCalls++
+        }
+
+        override suspend fun refreshDiscovery(): Result<Unit> {
+            refreshCalls++
+            return Result.success(Unit)
         }
 
         override suspend fun pickFilesToSend(): List<FileSource> = pickedFilesQueue
@@ -178,6 +184,35 @@ class FileShareMainViewModelTest {
         assertEquals("--", ByteFormatter.formatEta(null))
         assertEquals("45s", ByteFormatter.formatEta(45))
         assertEquals("2m 05s", ByteFormatter.formatEta(125))
+    }
+
+    @Test
+    fun `refreshPeers dispara descoberta e atualiza selecao quando par expira`() = runTest {
+        val runtime = FakeRuntimePort()
+        val vm = FileShareMainViewModel(runtime, backgroundScope)
+        vm.startNodeInternal()
+        runCurrent()
+
+        val peer = samplePeer(id = "550e8400-e29b-41d4-a716-446655440999", alias = "Android-LAN")
+            .copy(origin = PeerOrigin.MULTICAST, connectionState = PeerConnectionState.DISCOVERED)
+        runtime.peersFlow.value = listOf(peer)
+        runCurrent()
+        assertEquals(peer.identity.deviceId, vm.uiState.value.selectedPeerDeviceId)
+
+        vm.refreshPeers()
+        runCurrent()
+        assertEquals(1, runtime.refreshCalls)
+        assertEquals(LocalNodeState.AVAILABLE, vm.uiState.value.nodeState)
+
+        // Par transita para STALE mantendo selecao
+        runtime.peersFlow.value = listOf(peer.copy(connectionState = PeerConnectionState.STALE))
+        runCurrent()
+        assertEquals(PeerConnectionState.STALE, vm.uiState.value.selectedPeer?.connectionState)
+
+        // Expirado -> selecao limpa automaticamente
+        runtime.peersFlow.value = emptyList()
+        runCurrent()
+        assertNull(vm.uiState.value.selectedPeerDeviceId)
     }
 }
 

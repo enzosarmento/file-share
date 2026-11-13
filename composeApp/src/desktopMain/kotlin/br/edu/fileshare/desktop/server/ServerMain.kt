@@ -4,6 +4,11 @@ import br.edu.fileshare.ProjectInfo
 import br.edu.fileshare.core.id.PlatformUuidGenerator
 import br.edu.fileshare.desktop.di.DesktopServerContainer
 import br.edu.fileshare.desktop.storage.DesktopNioFileSink
+import br.edu.fileshare.network.discovery.DiscoveryCoordinator
+import br.edu.fileshare.network.discovery.DiscoveryDefaults
+import br.edu.fileshare.network.discovery.JvmMulticastTransport
+import br.edu.fileshare.network.discovery.JvmNetworkInterfaceProvider
+import br.edu.fileshare.network.discovery.PeerRegistry
 import br.edu.fileshare.network.server.AutoAcceptTransferApprovalHandler
 import br.edu.fileshare.network.server.FsapHttpServer
 import br.edu.fileshare.network.server.FsapHttpServerConfig
@@ -20,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.CountDownLatch
 import kotlin.system.exitProcess
 
@@ -32,11 +38,30 @@ internal class DesktopHeadlessServerRuntime(
     val tokenManager: TransferTokenManager,
     val sessionManager: ServerTransferSessionManager,
     val server: FsapHttpServer,
+    val discoveryCoordinator: DiscoveryCoordinator? = null,
+    val networkInterfaceProvider: JvmNetworkInterfaceProvider = JvmNetworkInterfaceProvider(),
     private val serverScope: CoroutineScope,
 ) {
-    suspend fun start(): Int = server.start()
+    @Volatile
+    private var currentIdentity: DeviceIdentity = identity
+
+    fun activeIdentity(): DeviceIdentity = currentIdentity
+
+    suspend fun start(): Int {
+        val boundPort = server.start()
+        currentIdentity = identity.copy(httpPort = boundPort)
+        discoveryCoordinator?.startBestEffort()
+        return boundPort
+    }
 
     fun stopGracefully() {
+        runCatching {
+            runBlocking {
+                withTimeoutOrNull(FsapConstants.T_SHUTDOWN_GRACE_MS) {
+                    discoveryCoordinator?.stop(reason = "SERVICE_STOPPED")
+                }
+            }
+        }
         runCatching {
             server.stop(
                 gracePeriodMillis = FsapConstants.T_SHUTDOWN_GRACE_MS,
@@ -51,6 +76,8 @@ internal fun createDesktopHeadlessServer(
     config: ServerCliConfig,
     container: DesktopServerContainer = DesktopServerContainer(),
     approvalHandlerOverride: TransferApprovalHandler? = null,
+    enableDiscovery: Boolean = true,
+    discoveryPort: Int = DiscoveryDefaults.UDP_PORT,
 ): DesktopHeadlessServerRuntime {
     val serverScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     val identity = DeviceIdentity(
@@ -92,14 +119,37 @@ internal fun createDesktopHeadlessServer(
             approvalHandler = approvalHandler,
         ),
     )
+
+    val nicProvider = JvmNetworkInterfaceProvider()
+    val peerRegistry = PeerRegistry(clock = container.clock, logger = container.logger)
+    var runtimeRef: DesktopHeadlessServerRuntime? = null
+    val discoveryCoordinator = if (enableDiscovery) {
+        DiscoveryCoordinator(
+            transport = JvmMulticastTransport(
+                port = discoveryPort,
+                interfaceProvider = nicProvider,
+                logger = container.logger,
+            ),
+            peerRegistry = peerRegistry,
+            localIdentityProvider = { runtimeRef?.activeIdentity() ?: identity },
+            scope = serverScope,
+            clock = container.clock,
+            logger = container.logger,
+        )
+    } else {
+        null
+    }
+
     return DesktopHeadlessServerRuntime(
         identity = identity,
         fileSink = fileSink,
         tokenManager = tokenManager,
         sessionManager = sessionManager,
         server = server,
+        discoveryCoordinator = discoveryCoordinator,
+        networkInterfaceProvider = nicProvider,
         serverScope = serverScope,
-    )
+    ).also { runtimeRef = it }
 }
 
 /**
@@ -128,9 +178,12 @@ fun main(args: Array<String>) {
     val boundPort = runBlocking { runtime.start() }
 
     println("[${ProjectInfo.PROJECT_NAME}] Servidor Desktop Independente (${ProjectInfo.PROTOCOL_NAME}/${ProjectInfo.PROTOCOL_VERSION})")
+    val lanIps = runtime.networkInterfaceProvider.listLocalIpv4Addresses()
     println("Configuracao ativa:")
     println("  - Device ID      : ${runtime.identity.deviceId}")
     println("  - Porta HTTP/TCP : $boundPort")
+    println("  - Descoberta UDP : ${DiscoveryDefaults.MULTICAST_GROUP}:${DiscoveryDefaults.UDP_PORT} (ativa=${runtime.discoveryCoordinator?.isRunning == true})")
+    println("  - IPs LAN        : ${if (lanIps.isEmpty()) "127.0.0.1" else lanIps.joinToString(", ")}")
     println("  - Alias          : ${runtime.identity.alias}")
     println("  - Plataforma     : ${runtime.identity.platform}")
     println("  - Download dir   : ${runtime.fileSink.targetDirectory}")
