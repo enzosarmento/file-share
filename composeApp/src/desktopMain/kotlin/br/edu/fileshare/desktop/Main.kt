@@ -1,19 +1,51 @@
 package br.edu.fileshare.desktop
 
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Window
+import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import br.edu.fileshare.ProjectInfo
+import br.edu.fileshare.desktop.runtime.DesktopAppRuntime
+import br.edu.fileshare.ui.FileShareApp
+import br.edu.fileshare.ui.viewmodel.FileShareMainViewModel
 
 /**
- * Ponto de entrada planejado para o Cliente Grafico Desktop (Compose Multiplatform).
- *
- * Responsabilidade arquitetural (Secao 4.1):
- * - Inicializar apenas a camada de apresentacao Desktop e orquestracao do cliente.
- * - O servico de rede/servidor Desktop possui entrypoint independente em
- *   [br.edu.fileshare.desktop.server.main].
- *
- * Status: Aguardando implementacao nas Milestones M1/M2 (ver `tasks/backlog.md`).
+ * Ponto de entrada da aplicacao grafica Compose Desktop (`TASK-DCLI-001`).
  */
-fun main() {
-    println("[${ProjectInfo.PROJECT_NAME}] Cliente Desktop (GUI) - ${ProjectInfo.CURRENT_MILESTONE}")
-    println("Estrutura inicial validada. Funcionalidades de UI e rede nao implementadas na etapa M0.")
-}
+fun main() = application {
+    val runtime = remember { DesktopAppRuntime() }
+    val uiScope = rememberCoroutineScope()
+    val mainViewModel = remember(runtime, uiScope) {
+        FileShareMainViewModel(
+            runtime = runtime,
+            scope = uiScope,
+            logger = runtime.logger,
+        )
+    }
 
+    LaunchedEffect(mainViewModel) {
+        mainViewModel.startNode()
+    }
+
+    DisposableEffect(runtime) {
+        onDispose {
+            runtime.close()
+        }
+    }
+
+    val windowState = rememberWindowState(width = 1040.dp, height = 720.dp)
+    Window(
+        onCloseRequest = {
+            runtime.close()
+            exitApplication()
+        },
+        state = windowState,
+        title = "${ProjectInfo.PROJECT_NAME} - ${ProjectInfo.PROTOCOL_NAME}/${ProjectInfo.PROTOCOL_VERSION}",
+    ) {
+        FileShareApp(viewModel = mainViewModel)
+    }
+}
