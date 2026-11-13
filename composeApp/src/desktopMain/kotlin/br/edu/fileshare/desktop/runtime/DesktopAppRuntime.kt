@@ -10,6 +10,7 @@ import br.edu.fileshare.desktop.storage.DesktopFilePicker
 import br.edu.fileshare.desktop.storage.DesktopNioFileSink
 import br.edu.fileshare.network.client.FsapHttpClient
 import br.edu.fileshare.network.discovery.DiscoveredPeer
+import br.edu.fileshare.network.discovery.ManualConnectResult
 import br.edu.fileshare.network.discovery.ManualPeerConnector
 import br.edu.fileshare.network.discovery.PeerRegistry
 import br.edu.fileshare.network.server.FsapHttpServer
@@ -151,6 +152,9 @@ class DesktopAppRuntime(
         _localAddresses.value = enumerateLocalIpv4Addresses()
         return Result.success(Unit)
     }
+
+    suspend fun connectByManualIp(ipAddress: String, port: Int): ManualConnectResult =
+        manualConnector.connectByManualIp(ipAddress, port)
 
     private val isClosed = java.util.concurrent.atomic.AtomicBoolean(false)
 
