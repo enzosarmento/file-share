@@ -19,7 +19,7 @@
 | `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `DONE` |
 | `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `DONE` |
 | `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `DONE` |
-| `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `TODO` |
+| `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `TODO` |
 | `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `TODO` |
 | `TASK-DISC-003` | Listener UDP Multicast com filtro de loopback e jitter | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-005` | `TODO` |
@@ -235,7 +235,7 @@
   - Mensagens inválidas retornam `ValidationResult.Invalid(FsapErrorCode)` correspondente (`MALFORMED_MESSAGE`, `UNSUPPORTED_VERSION`, etc.).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/protocol/validation/`
 - **Testes necessários:** Testes parametrizados com payloads válidos e inválidos (`TC-FSAP-001`, `TC-FSAP-003`, `TC-FSAP-007`).
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ---
 
