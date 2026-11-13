@@ -42,7 +42,7 @@
 | `TASK-AND-004` | Telas Compose adaptadas para Android (Descoberta e Aprovação) | 7. Cliente Android | M5 | P0 | Média | `TASK-AND-002`, `TASK-AND-003`, `TASK-DCLI-002` | `TODO` |
 | `TASK-AND-005` | Fluxo completo de envio/recebimento Android com notificações | 7. Cliente Android | M5 | P0 | Alta | `TASK-AND-004`, `TASK-XFER-005` | `TODO` |
 | `TASK-XFER-001` | Portas `FileSource`/`FileSink` e streaming 64 KB + SHA-256 | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-FSAP-001` | `DONE` |
-| `TASK-XFER-002` | `FsapHttpClient` para `TRANSFER_REQUEST` e `ACCEPT`/`REJECT` | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `TODO` |
+| `TASK-XFER-002` | `FsapHttpClient` para `TRANSFER_REQUEST` e `ACCEPT`/`REJECT` | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-XFER-003` | Upload streaming `TRANSFER_CONTENT` e `TRANSFER_COMPLETE` | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-XFER-001`, `TASK-XFER-002` | `TODO` |
 | `TASK-XFER-004` | `TransferProgressTracker` concorrente com throttling (100 ms) | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-XFER-003`, `TASK-FSAP-003` | `TODO` |
 | `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `TODO` |
@@ -615,7 +615,7 @@
   - Cliente transita corretamente a `TransferStateMachine` local de `CREATED` → `PENDING_APPROVAL` → `ACCEPTED` / `REJECTED` / `FAILED`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/client/FsapHttpClient.kt`
 - **Testes necessários:** Testes de cliente com `MockEngine` / `testApplication` (`TC-FSAP-008`, `TC-FSAP-011`, `TC-FSAP-012`).
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-XFER-003` — Upload binário em streaming (`TRANSFER_CONTENT`) e confirmação de lote (`TRANSFER_COMPLETE`)
 - **ID único:** `TASK-XFER-003`
