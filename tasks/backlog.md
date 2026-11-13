@@ -18,7 +18,7 @@
 | `TASK-FSAP-001` | Entidades `DeviceIdentity` e envelope base JSON FSAP | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-ARC-001`, `TASK-INF-001` | `DONE` |
 | `TASK-FSAP-002` | DTOs de todas as 12 mensagens UDP e HTTP/TCP do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-001` | `DONE` |
 | `TASK-FSAP-003` | Máquinas de estados (`LocalNode`, `Peer`, `Transfer`) | 3. Protocolo FSAP | M1 | P0 | Alta | `TASK-FSAP-001` | `TODO` |
-| `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `TODO` |
+| `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `DONE` |
 | `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `TODO` |
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `TODO` |
 | `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `TODO` |
@@ -220,7 +220,7 @@
   - Todos os códigos `FSAP-ERR-*` de `docs/error-codes.md` estão mapeados com status HTTP exato e serializam no formato esperado.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/protocol/error/`
 - **Testes necessários:** Testes unitários de mapeamento código ↔ status HTTP em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status:** `DONE`
 
 ### `TASK-FSAP-005` — Implementação dos validadores sintáticos e semânticos de mensagens e versão do protocolo
 - **ID único:** `TASK-FSAP-005`
