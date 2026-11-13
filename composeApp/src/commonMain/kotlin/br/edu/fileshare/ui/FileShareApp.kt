@@ -41,7 +41,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import br.edu.fileshare.ProjectInfo
 import br.edu.fileshare.network.discovery.DiscoveredPeer
+import br.edu.fileshare.network.discovery.PeerOrigin
 import br.edu.fileshare.protocol.statemachine.LocalNodeState
+import br.edu.fileshare.protocol.statemachine.PeerConnectionState
 import br.edu.fileshare.storage.FileSource
 import br.edu.fileshare.storage.StoredFileDescriptor
 import br.edu.fileshare.ui.format.ByteFormatter
@@ -427,7 +429,10 @@ private fun PeersAndSendPane(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Text("Dispositivos disponiveis", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = "Dispositivos disponiveis (${state.peers.size})",
+                    style = MaterialTheme.typography.titleMedium,
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(onClick = onRefreshPeers) { Text("Atualizar") }
                     manualConnectTrigger()
@@ -479,6 +484,38 @@ private fun PeerSelectionCard(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
+    val (badgeLabel, badgeContainer, badgeContent) = when (peer.connectionState) {
+        PeerConnectionState.DISCOVERED -> Triple(
+            "Descoberto",
+            MaterialTheme.colorScheme.primaryContainer,
+            MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+        PeerConnectionState.CONNECTING -> Triple(
+            "Conectando...",
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.onSecondaryContainer,
+        )
+        PeerConnectionState.CONNECTED -> Triple(
+            "Conectado",
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.onSecondaryContainer,
+        )
+        PeerConnectionState.STALE -> Triple(
+            "Instavel (STALE)",
+            MaterialTheme.colorScheme.tertiaryContainer,
+            MaterialTheme.colorScheme.onTertiaryContainer,
+        )
+        PeerConnectionState.DISCONNECTED -> Triple(
+            "Desconectado",
+            MaterialTheme.colorScheme.errorContainer,
+            MaterialTheme.colorScheme.onErrorContainer,
+        )
+    }
+    val originLabel = when (peer.origin) {
+        PeerOrigin.MULTICAST -> "UDP LAN"
+        PeerOrigin.MANUAL_IP -> "IP Manual"
+    }
+
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(
@@ -501,15 +538,24 @@ private fun PeerSelectionCard(
                     text = peer.identity.alias,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
                 )
-                Text(
-                    text = peer.connectionState.name,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Surface(color = badgeContainer, shape = MaterialTheme.shapes.small) {
+                    Text(
+                        text = badgeLabel,
+                        color = badgeContent,
+                        style = MaterialTheme.typography.labelSmall,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                    )
+                }
             }
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "${peer.ipAddress}:${peer.port}  |  ${peer.identity.deviceType} / ${peer.identity.platform}  |  ${peer.origin}",
+                text = "${peer.ipAddress}:${peer.port}  |  ${peer.identity.deviceType} / ${peer.identity.platform}  |  $originLabel",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )

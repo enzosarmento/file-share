@@ -12,6 +12,9 @@ import br.edu.fileshare.network.client.FsapHttpClient
 import br.edu.fileshare.network.discovery.DiscoveredPeer
 import br.edu.fileshare.network.discovery.ManualConnectResult
 import br.edu.fileshare.network.discovery.ManualPeerConnector
+import br.edu.fileshare.network.discovery.DiscoveryCoordinator
+import br.edu.fileshare.network.discovery.JvmMulticastTransport
+import br.edu.fileshare.network.discovery.JvmNetworkInterfaceProvider
 import br.edu.fileshare.network.discovery.PeerRegistry
 import br.edu.fileshare.network.server.FsapHttpServer
 import br.edu.fileshare.network.server.FsapHttpServerConfig
@@ -65,10 +68,12 @@ class DesktopAppRuntime(
     )
     override val peers: StateFlow<List<DiscoveredPeer>> = peerRegistry.peers
 
+    val networkInterfaceProvider = JvmNetworkInterfaceProvider()
+
     private val _receivedFiles = MutableStateFlow<List<StoredFileDescriptor>>(emptyList())
     override val receivedFiles: StateFlow<List<StoredFileDescriptor>> = _receivedFiles.asStateFlow()
 
-    private val _localAddresses = MutableStateFlow(enumerateLocalIpv4Addresses())
+    private val _localAddresses = MutableStateFlow(networkInterfaceProvider.listLocalIpv4Addresses())
     override val localAddresses: StateFlow<List<String>> = _localAddresses.asStateFlow()
 
     val approvalCoordinator = InteractiveTransferApprovalCoordinator()
@@ -98,13 +103,14 @@ class DesktopAppRuntime(
     )
 
     private var httpServer: FsapHttpServer? = null
+    private var discoveryCoordinator: DiscoveryCoordinator? = null
 
     init {
         loadExistingReceivedFiles()
     }
 
     override suspend fun startNode(alias: String, port: Int): Result<Int> = runCatching {
-        stopActiveServerOnly()
+        stopActiveServices(reason = "NODE_RESTART")
 
         activeIdentity = buildIdentity(alias, port)
 
@@ -128,12 +134,26 @@ class DesktopAppRuntime(
         val boundPort = server.start()
         activeIdentity = activeIdentity.copy(httpPort = boundPort)
         httpServer = server
-        _localAddresses.value = enumerateLocalIpv4Addresses()
+        _localAddresses.value = networkInterfaceProvider.listLocalIpv4Addresses()
+
+        val coordinator = DiscoveryCoordinator(
+            transport = JvmMulticastTransport(
+                interfaceProvider = networkInterfaceProvider,
+                logger = logger,
+            ),
+            peerRegistry = peerRegistry,
+            localIdentityProvider = { activeIdentity },
+            scope = scope,
+            clock = clock,
+            logger = logger,
+        )
+        coordinator.startBestEffort()
+        discoveryCoordinator = coordinator
         boundPort
     }
 
     override suspend fun stopNode() {
-        stopActiveServerOnly()
+        stopActiveServices(reason = "USER_STOPPED")
     }
 
     override suspend fun pickFilesToSend(): List<FileSource> = DesktopFilePicker.pickMultipleFiles()
@@ -149,8 +169,8 @@ class DesktopAppRuntime(
     }
 
     override suspend fun refreshDiscovery(): Result<Unit> {
-        _localAddresses.value = enumerateLocalIpv4Addresses()
-        return Result.success(Unit)
+        _localAddresses.value = networkInterfaceProvider.listLocalIpv4Addresses()
+        return discoveryCoordinator?.refresh() ?: Result.success(Unit)
     }
 
     suspend fun connectByManualIp(ipAddress: String, port: Int): ManualConnectResult =
@@ -160,9 +180,9 @@ class DesktopAppRuntime(
 
     fun close() {
         if (!isClosed.compareAndSet(false, true)) return
-        stopActiveServerOnly()
         runBlocking {
             withTimeoutOrNull(FsapConstants.T_SHUTDOWN_GRACE_MS) {
+                stopActiveServices(reason = "USER_SHUTDOWN")
                 runCatching { transferCoordinator.close() }
                 runCatching { sessionManager.close() }
             }
@@ -172,7 +192,11 @@ class DesktopAppRuntime(
         scope.cancel("Aplicacao Desktop encerrada.")
     }
 
-    private fun stopActiveServerOnly() {
+    private suspend fun stopActiveServices(reason: String) {
+        discoveryCoordinator?.let { coordinator ->
+            runCatching { coordinator.stop(reason = reason) }
+        }
+        discoveryCoordinator = null
         httpServer?.let { srv ->
             runCatching {
                 srv.stop(
