@@ -9,6 +9,8 @@ import br.edu.fileshare.protocol.model.FsapEnvelope
 import br.edu.fileshare.protocol.model.FsapMessageType
 import br.edu.fileshare.protocol.model.IdentifyPayload
 import br.edu.fileshare.protocol.model.TransferRequestPayload
+import br.edu.fileshare.storage.FileNameSanitizer
+import br.edu.fileshare.storage.FileNameValidationResult
 
 /**
  * Resultado deterministico das validacoes sintaticas e semanticas do FSAP/1.0.
@@ -211,10 +213,11 @@ object FsapMessageValidator {
                     "fileId ausente ou duplicado: '${file.fileId}'.",
                 )
             }
-            if (!hasSafeFileNameSyntax(file.fileName)) {
+            val fileNameCheck = FileNameSanitizer.validate(file.fileName)
+            if (fileNameCheck is FileNameValidationResult.Unsafe) {
                 return ValidationResult.Invalid(
                     FsapErrorCode.INVALID_FILENAME,
-                    "Nome de arquivo invalido ou inseguro: '${file.fileName}'.",
+                    "Nome de arquivo invalido ('${file.fileName}'): ${fileNameCheck.reason}",
                 )
             }
             if (file.sizeBytes < 0L) {
@@ -252,14 +255,6 @@ object FsapMessageValidator {
         }
 
         return ValidationResult.Valid
-    }
-
-    private fun hasSafeFileNameSyntax(fileName: String): Boolean {
-        if (fileName.isBlank() || fileName.length > 255) return false
-        if (fileName.contains('\u0000')) return false
-        if (fileName.contains('/') || fileName.contains('\\')) return false
-        if (fileName == "." || fileName == ".." || fileName.contains("..")) return false
-        return true
     }
 }
 
