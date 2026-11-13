@@ -21,7 +21,7 @@
 | `TASK-FSAP-004` | Catálogo `FsapErrorCode`, envelope `ERROR` e exceções | 3. Protocolo FSAP | M1 | P0 | Baixa | `TASK-FSAP-002` | `DONE` |
 | `TASK-FSAP-005` | Validadores sintáticos/semânticos e versão do FSAP | 3. Protocolo FSAP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-DISC-001` | `MulticastTransport` e filtro `NetworkInterfaceProvider` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-001`, `TASK-INF-003` | `DONE` |
-| `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `TODO` |
+| `TASK-DISC-002` | Emissor UDP de `ANNOUNCE` periódico, `DISCOVER` e `BYE` | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-002` | `DONE` |
 | `TASK-DISC-003` | Listener UDP Multicast com filtro de loopback e jitter | 4. Descoberta UDP | M3 | P0 | Média | `TASK-DISC-001`, `TASK-FSAP-005` | `TODO` |
 | `TASK-DISC-004` | `PeerRegistry` concorrente com `STALE` e expiração TTL | 4. Descoberta UDP | M3 | P0 | Média | `TASK-FSAP-003`, `TASK-DISC-003` | `TODO` |
 | `TASK-DISC-005` | Conexão Manual por IP via handshake TCP `IDENTIFY` | 4. Descoberta UDP | M1 | P0 | Média | `TASK-FSAP-002`, `TASK-DSRV-001` | `DONE` |
@@ -271,7 +271,7 @@
   - Envio garantido de datagrama `BYE` ao invocar `stop()`.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/discovery/DiscoveryBroadcaster.kt`
 - **Testes necessários:** Testes com `FakeMulticastTransport` e `advanceTimeBy` em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DISC-003` — Listener UDP Multicast com validação de datagramas, filtro de loopback e resposta com jitter
 - **ID único:** `TASK-DISC-003`
