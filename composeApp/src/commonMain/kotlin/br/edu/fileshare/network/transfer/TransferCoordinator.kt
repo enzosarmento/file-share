@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 
 sealed interface SendFilesOutcome {
     data class Completed(val transferId: String, val totalBytes: Long, val filesCount: Int) : SendFilesOutcome
@@ -193,12 +194,18 @@ class TransferCoordinator(
                 }
 
                 is PrepareTransferResult.Failed -> {
+                    val currentState = stateMachine.currentState()
                     progressTracker.updateState(
                         transferId = transferId,
-                        state = stateMachine.currentState(),
+                        state = currentState,
                         errorCode = prepareRes.errorCode,
                         errorMessage = prepareRes.message,
                     )
+                    if (currentState == TransferState.CANCELLED ||
+                        prepareRes.errorCode == FsapErrorCode.TRANSFER_CANCELLED
+                    ) {
+                        return SendFilesOutcome.Cancelled(transferId, prepareRes.message)
+                    }
                     return SendFilesOutcome.Failed(transferId, prepareRes.errorCode, prepareRes.message)
                 }
             }
@@ -255,13 +262,24 @@ class TransferCoordinator(
                 }
 
                 is TransferBatchUploadResult.Failed -> {
-                    progressTracker.updateState(
-                        transferId = transferId,
-                        state = stateMachine.currentState(),
-                        errorCode = uploadOutcome.errorCode,
-                        errorMessage = uploadOutcome.message,
-                    )
-                    SendFilesOutcome.Failed(transferId, uploadOutcome.errorCode, uploadOutcome.message)
+                    if (context.cancelRequested) {
+                        stateMachine.transitionIfPossible(TransferEvent.CANCEL_TRANSFER)
+                        progressTracker.updateState(
+                            transferId = transferId,
+                            state = TransferState.CANCELLED,
+                            errorCode = FsapErrorCode.TRANSFER_CANCELLED,
+                            errorMessage = context.cancelReason ?: uploadOutcome.message,
+                        )
+                        SendFilesOutcome.Cancelled(transferId, context.cancelReason)
+                    } else {
+                        progressTracker.updateState(
+                            transferId = transferId,
+                            state = stateMachine.currentState(),
+                            errorCode = uploadOutcome.errorCode,
+                            errorMessage = uploadOutcome.message,
+                        )
+                        SendFilesOutcome.Failed(transferId, uploadOutcome.errorCode, uploadOutcome.message)
+                    }
                 }
             }
         } catch (cancelled: CancellationException) {
@@ -293,16 +311,19 @@ class TransferCoordinator(
         if (outgoing != null) {
             outgoing.cancelRequested = true
             outgoing.cancelReason = reason
-            outgoing.job?.cancel(CancellationException("Cancelada localmente: $reason"))
+            // Notifica o servidor via POST /cancel antes de romper o socket local, evitando falso CONNECTION_LOST.
             runCatching {
-                httpClient.cancelTransferOnPeer(
-                    endpoint = outgoing.endpoint,
-                    transferId = transferId,
-                    cancelledBy = CancelledBy.SENDER,
-                    transferToken = outgoing.transferToken,
-                    reason = reason,
-                )
+                withTimeoutOrNull(800L) {
+                    httpClient.cancelTransferOnPeer(
+                        endpoint = outgoing.endpoint,
+                        transferId = transferId,
+                        cancelledBy = CancelledBy.SENDER,
+                        transferToken = outgoing.transferToken,
+                        reason = reason,
+                    )
+                }
             }
+            outgoing.job?.cancel(CancellationException("Cancelada localmente: $reason"))
             logger?.info(
                 component = "TransferCoordinator",
                 message = "Cancelamento solicitado pelo remetente para sessao '$transferId' ($reason).",
@@ -361,16 +382,18 @@ class TransferCoordinator(
         for (ctx in activeJobs) {
             ctx.cancelRequested = true
             ctx.cancelReason = "APP_SHUTDOWN"
-            ctx.job?.cancel()
             runCatching {
-                httpClient.cancelTransferOnPeer(
-                    endpoint = ctx.endpoint,
-                    transferId = ctx.transferId,
-                    cancelledBy = CancelledBy.SENDER,
-                    transferToken = ctx.transferToken,
-                    reason = "APP_SHUTDOWN",
-                )
+                withTimeoutOrNull(800L) {
+                    httpClient.cancelTransferOnPeer(
+                        endpoint = ctx.endpoint,
+                        transferId = ctx.transferId,
+                        cancelledBy = CancelledBy.SENDER,
+                        transferToken = ctx.transferToken,
+                        reason = "APP_SHUTDOWN",
+                    )
+                }
             }
+            ctx.job?.cancel()
         }
         coordinatorScope.cancel()
     }

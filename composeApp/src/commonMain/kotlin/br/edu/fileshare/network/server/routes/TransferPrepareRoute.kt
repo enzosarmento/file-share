@@ -136,6 +136,14 @@ fun Routing.installTransferPrepareRoute(
         }
 
         if (decision == null) {
+            val currentSnap = services.sessionManager.findSnapshot(request.transferId)
+            if (currentSnap?.state == br.edu.fileshare.protocol.statemachine.TransferState.CANCELLED) {
+                throw FsapProtocolException(
+                    errorCode = FsapErrorCode.TRANSFER_CANCELLED,
+                    message = currentSnap.errorMessage ?: FsapErrorCode.TRANSFER_CANCELLED.defaultMessage,
+                    transferId = request.transferId,
+                )
+            }
             services.sessionManager.failPreparation(
                 transferId = request.transferId,
                 errorCode = FsapErrorCode.APPROVAL_TIMEOUT,
@@ -150,6 +158,15 @@ fun Routing.installTransferPrepareRoute(
             )
             call.respondFsapEnvelope(timeoutEnvelope, status = HttpStatusCode.RequestTimeout)
             return@post
+        }
+
+        val currentBeforeDecision = services.sessionManager.findSnapshot(request.transferId)
+        if (currentBeforeDecision?.state == br.edu.fileshare.protocol.statemachine.TransferState.CANCELLED) {
+            throw FsapProtocolException(
+                errorCode = FsapErrorCode.TRANSFER_CANCELLED,
+                message = currentBeforeDecision.errorMessage ?: FsapErrorCode.TRANSFER_CANCELLED.defaultMessage,
+                transferId = request.transferId,
+            )
         }
 
         when (decision) {
