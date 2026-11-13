@@ -447,8 +447,78 @@ class ServerTransferSessionManager(
         }
     }
 
-    suspend fun completeTransfer(transferId: String): TransferCompletePayload {
+    suspend fun verifyControlAccess(
+        transferId: String,
+        presentedToken: String?,
+        senderId: String? = null,
+        allowedAdditionalSenderId: String? = null,
+        requireTokenWhenActive: Boolean = true,
+    ) {
         val session = requireSession(transferId)
+        val tokenToValidateActive = session.mutex.withLock {
+            if (senderId != null) {
+                val matchesSessionSender = senderId.equals(session.senderId, ignoreCase = true)
+                val matchesAdditional = allowedAdditionalSenderId != null &&
+                    senderId.equals(allowedAdditionalSenderId, ignoreCase = true)
+                if (!matchesSessionSender && !matchesAdditional) {
+                    throw FsapProtocolException(
+                        errorCode = FsapErrorCode.UNAUTHORIZED_TRANSFER,
+                        message = "Remetente '$senderId' nao autorizado para controlar a sessao '$transferId'.",
+                        transferId = transferId,
+                    )
+                }
+            }
+
+            val state = session.fsm.currentState()
+            when {
+                state == TransferState.ACCEPTED ||
+                    state == TransferState.TRANSFERRING ||
+                    state == TransferState.VERIFYING -> {
+                    requireTokenWhenActive || presentedToken != null
+                }
+
+                state.isTerminal -> {
+                    if (presentedToken != null) {
+                        val issued = session.transferToken
+                        if (issued == null || !PlatformTokenCrypto.constantTimeEquals(issued, presentedToken)) {
+                            throw FsapProtocolException(
+                                errorCode = FsapErrorCode.UNAUTHORIZED_TRANSFER,
+                                message = "Token de transferencia invalido para a sessao '$transferId'.",
+                                transferId = transferId,
+                            )
+                        }
+                    }
+                    false
+                }
+
+                else -> false
+            }
+        }
+
+        if (tokenToValidateActive) {
+            when (
+                val tokenResult = tokenManager.validateSessionToken(
+                    transferId = transferId,
+                    presentedToken = presentedToken,
+                    refreshIdleTtl = false,
+                )
+            ) {
+                is TokenValidationResult.Authorized -> Unit
+                is TokenValidationResult.Denied -> throw FsapProtocolException(
+                    errorCode = tokenResult.errorCode,
+                    message = tokenResult.reason,
+                    transferId = transferId,
+                )
+            }
+        }
+    }
+
+    suspend fun completeTransfer(
+        transferId: String,
+        submittedFiles: List<CompletedFileSummary>? = null,
+    ): TransferCompletePayload {
+        val session = requireSession(transferId)
+        var integrityFailure: FsapProtocolException? = null
         val payload = session.mutex.withLock {
             val state = session.fsm.currentState()
             if (state != TransferState.VERIFYING ||
@@ -461,22 +531,73 @@ class ServerTransferSessionManager(
                 )
             }
 
-            session.idleTimerJob?.cancel()
-            session.idleTimerJob = null
-            session.fsm.transition(TransferEvent.ALL_FILES_VERIFIED_AND_COMPLETED)
-            tokenManager.revoke(transferId)
-
-            val summaries = session.acceptedFileIds.mapNotNull { id ->
-                session.verifiedFiles[id]?.let { CompletedFileSummary(fileId = id, sha256 = it.sha256) }
+            if (submittedFiles != null) {
+                val submittedById = LinkedHashMap<String, CompletedFileSummary>(submittedFiles.size)
+                for (entry in submittedFiles) {
+                    if (entry.fileId.isBlank() || submittedById.put(entry.fileId, entry) != null) {
+                        throw FsapProtocolException(
+                            errorCode = FsapErrorCode.MALFORMED_MESSAGE,
+                            message = "Lista completedFiles possui fileId ausente ou duplicado ('${entry.fileId}').",
+                            transferId = transferId,
+                            fileId = entry.fileId.takeIf { it.isNotBlank() },
+                        )
+                    }
+                }
+                if (submittedById.keys != session.acceptedFileIds) {
+                    throw FsapProtocolException(
+                        errorCode = FsapErrorCode.INVALID_STATE_TRANSITION,
+                        message = "Manifesto de finalizacao diverge dos arquivos aceitos na sessao '$transferId'.",
+                        transferId = transferId,
+                    )
+                }
+                for ((fileId, submitted) in submittedById) {
+                    val verified = session.verifiedFiles[fileId]
+                        ?: throw FsapProtocolException(
+                            errorCode = FsapErrorCode.INVALID_STATE_TRANSITION,
+                            message = "Arquivo '$fileId' ainda nao foi verificado na sessao '$transferId'.",
+                            transferId = transferId,
+                            fileId = fileId,
+                        )
+                    if (!submitted.sha256.equals(verified.sha256, ignoreCase = true)) {
+                        session.idleTimerJob?.cancel()
+                        session.idleTimerJob = null
+                        session.fsm.transition(TransferEvent.HASH_MISMATCH)
+                        val failure = FsapProtocolException(
+                            errorCode = FsapErrorCode.HASH_MISMATCH,
+                            message = "SHA-256 declarado em TRANSFER_COMPLETE para '$fileId' diverge do verificado.",
+                            transferId = transferId,
+                            fileId = fileId,
+                        )
+                        session.lastErrorCode = failure.errorCode
+                        session.lastErrorMessage = failure.message
+                        tokenManager.revoke(transferId)
+                        integrityFailure = failure
+                        break
+                    }
+                }
             }
-            TransferCompletePayload(
-                transferId = transferId,
-                completedFiles = summaries,
-                state = TransferState.COMPLETED.name,
-            )
+
+            if (integrityFailure != null) {
+                null
+            } else {
+                session.idleTimerJob?.cancel()
+                session.idleTimerJob = null
+                session.fsm.transition(TransferEvent.ALL_FILES_VERIFIED_AND_COMPLETED)
+                tokenManager.revoke(transferId)
+
+                val summaries = session.acceptedFileIds.mapNotNull { id ->
+                    session.verifiedFiles[id]?.let { CompletedFileSummary(fileId = id, sha256 = it.sha256) }
+                }
+                TransferCompletePayload(
+                    transferId = transferId,
+                    completedFiles = summaries,
+                    state = TransferState.COMPLETED.name,
+                )
+            }
         }
         publishSnapshots()
-        return payload
+        integrityFailure?.let { throw it }
+        return payload!!
     }
 
     suspend fun cancelTransfer(
@@ -484,9 +605,17 @@ class ServerTransferSessionManager(
         cancelledBy: CancelledBy,
         reason: String? = null,
     ) {
+        cancelTransferAndStatus(transferId = transferId, cancelledBy = cancelledBy, reason = reason)
+    }
+
+    suspend fun cancelTransferAndStatus(
+        transferId: String,
+        cancelledBy: CancelledBy,
+        reason: String? = null,
+    ): TransferStatusPayload {
         val session = requireSession(transferId)
-        withContext(NonCancellable) {
-            session.mutex.withLock {
+        val statusPayload = withContext(NonCancellable) {
+            val payload = session.mutex.withLock {
                 if (session.fsm.currentState().isTerminal) {
                     throw FsapProtocolException(
                         errorCode = FsapErrorCode.INVALID_STATE_TRANSITION,
@@ -507,29 +636,34 @@ class ServerTransferSessionManager(
                 session.lastErrorCode = FsapErrorCode.TRANSFER_CANCELLED
                 session.lastErrorMessage = reason ?: "Cancelada por $cancelledBy."
                 tokenManager.revoke(transferId)
+                session.toStatusPayloadLocked()
             }
             runCatching { fileSink.cleanupTransferParts(transferId) }
             publishSnapshots()
+            payload
         }
+        return statusPayload
     }
 
     suspend fun getStatusPayload(transferId: String): TransferStatusPayload {
         val session = requireSession(transferId)
-        return session.mutex.withLock {
-            val totalAcceptedBytes = session.acceptedFileIds.sumOf { id ->
-                session.filesById[id]?.sizeBytes ?: 0L
-            }.takeIf { session.acceptedFileIds.isNotEmpty() } ?: session.totalBytes
+        return session.mutex.withLock { session.toStatusPayloadLocked() }
+    }
 
-            TransferStatusPayload(
-                transferId = transferId,
-                state = session.fsm.currentState().name,
-                totalBytesTransferred = session.bytesReceivedByFile.values.sum(),
-                totalBytes = totalAcceptedBytes,
-                currentFileId = session.currentFileId,
-                filesCompleted = session.verifiedFiles.size,
-                totalFiles = session.acceptedFileIds.size.takeIf { it > 0 } ?: session.files.size,
-            )
-        }
+    private fun ServerTransferSession.toStatusPayloadLocked(): TransferStatusPayload {
+        val totalAcceptedBytes = acceptedFileIds.sumOf { id ->
+            filesById[id]?.sizeBytes ?: 0L
+        }.takeIf { acceptedFileIds.isNotEmpty() } ?: totalBytes
+
+        return TransferStatusPayload(
+            transferId = transferId,
+            state = fsm.currentState().name,
+            totalBytesTransferred = bytesReceivedByFile.values.sum(),
+            totalBytes = totalAcceptedBytes,
+            currentFileId = currentFileId,
+            filesCompleted = verifiedFiles.size,
+            totalFiles = acceptedFileIds.size.takeIf { it > 0 } ?: files.size,
+        )
     }
 
     suspend fun findSnapshot(transferId: String): ServerSessionSnapshot? {
