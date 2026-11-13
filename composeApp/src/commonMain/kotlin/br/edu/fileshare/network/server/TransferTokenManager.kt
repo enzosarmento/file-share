@@ -89,6 +89,29 @@ class TransferTokenManager(
         fileId: String,
         presentedToken: String?,
         refreshIdleTtl: Boolean = true,
+    ): TokenValidationResult = validateInternal(
+        transferId = transferId,
+        requiredFileId = fileId,
+        presentedToken = presentedToken,
+        refreshIdleTtl = refreshIdleTtl,
+    )
+
+    fun validateSessionToken(
+        transferId: String,
+        presentedToken: String?,
+        refreshIdleTtl: Boolean = false,
+    ): TokenValidationResult = validateInternal(
+        transferId = transferId,
+        requiredFileId = null,
+        presentedToken = presentedToken,
+        refreshIdleTtl = refreshIdleTtl,
+    )
+
+    private fun validateInternal(
+        transferId: String,
+        requiredFileId: String?,
+        presentedToken: String?,
+        refreshIdleTtl: Boolean,
     ): TokenValidationResult {
         if (presentedToken.isNullOrBlank()) {
             return TokenValidationResult.Denied(
@@ -120,10 +143,10 @@ class TransferTokenManager(
                 )
             }
 
-            if (fileId !in entry.allowedFileIds) {
+            if (requiredFileId != null && requiredFileId !in entry.allowedFileIds) {
                 return@withLock TokenValidationResult.Denied(
                     errorCode = FsapErrorCode.FILE_NOT_FOUND,
-                    reason = "Arquivo '$fileId' nao consta no manifesto aprovado da sessao '$transferId'.",
+                    reason = "Arquivo '$requiredFileId' nao consta no manifesto aprovado da sessao '$transferId'.",
                 )
             }
 

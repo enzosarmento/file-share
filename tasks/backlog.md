@@ -29,7 +29,7 @@
 | `TASK-DSRV-002` | Gerenciador de sessões concorrentes no Servidor Desktop | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-001`, `TASK-FSAP-003` | `DONE` |
 | `TASK-DSRV-003` | Endpoint `TRANSFER_REQUEST`, aprovação (60s) e token | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-002`, `TASK-SEC-001`, `TASK-SEC-002` | `DONE` |
 | `TASK-DSRV-004` | Endpoint `TRANSFER_CONTENT`, escrita `.part` e SHA-256 | 5. Servidor Desktop | M2 | P0 | Alta | `TASK-DSRV-003`, `TASK-XFER-001` | `DONE` |
-| `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `TODO` |
+| `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `DONE` |
 | `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `TODO` |
 | `TASK-DCLI-002` | Tela de listagem reativa de dispositivos (`PeerRegistry`) | 6. Cliente Desktop | M3 | P0 | Média | `TASK-DCLI-001`, `TASK-DISC-004` | `TODO` |
 | `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `TODO` |
@@ -404,7 +404,7 @@
   - `POST /cancel` interrompe imediatamente a recepção e remove arquivos `.part` (`TC-FSAP-017`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/server/routes/TransferControlRoutes.kt`
 - **Testes necessários:** Casos `TC-FSAP-015`, `TC-FSAP-016`, `TC-FSAP-017`, `TC-FSAP-018` e `TC-FSAP-023`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ---
 
