@@ -32,7 +32,7 @@
 | `TASK-DSRV-005` | Endpoints `STATUS`, `CANCEL`, `COMPLETE` e limpeza `.part` | 5. Servidor Desktop | M2 | P0 | Média | `TASK-DSRV-004` | `DONE` |
 | `TASK-DCLI-001` | Estrutura base da UI Compose Desktop e navegação | 6. Cliente Desktop | M2 | P1 | Baixa | `TASK-INF-003` | `DONE` |
 | `TASK-DCLI-002` | Tela de listagem reativa de dispositivos (`PeerRegistry`) | 6. Cliente Desktop | M3 | P0 | Média | `TASK-DCLI-001`, `TASK-DISC-004` | `TODO` |
-| `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `TODO` |
+| `TASK-DCLI-003` | Diálogo/formulário de Conexão Manual por IP no Desktop | 6. Cliente Desktop | M2 | P0 | Baixa | `TASK-DCLI-001`, `TASK-DISC-005` | `DONE` |
 | `TASK-DCLI-004` | Seletor nativo de arquivos Desktop e `DesktopNioFileStorage` | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-001` | `DONE` |
 | `TASK-DCLI-005` | Modal de confirmação explícita (Aceitar/Recusar) Desktop | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-DSRV-003` | `TODO` |
 | `TASK-DCLI-006` | Barra de progresso, métricas de velocidade e cancelamento | 6. Cliente Desktop | M2 | P0 | Média | `TASK-DCLI-001`, `TASK-XFER-004`, `TASK-XFER-005` | `TODO` |
@@ -453,7 +453,7 @@
   - Usuário consegue adicionar um Servidor Desktop Independente informando `127.0.0.1:53319` ou IP da LAN e selecioná-lo para envio.
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/ui/components/ManualIpConnectDialog.kt`
 - **Testes necessários:** Teste de validação de entrada de IP/Porta no ViewModel em `commonTest`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-DCLI-004` — Integração com seletor nativo de arquivos Desktop e `DesktopNioFileStorage`
 - **ID único:** `TASK-DCLI-004`
