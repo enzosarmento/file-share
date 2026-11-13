@@ -243,7 +243,9 @@ class ServerTransferSessionManager(
         reason: String,
     ) {
         val session = findSession(transferId) ?: return
+        var modified = false
         session.mutex.withLock {
+            if (session.fsm.currentState().isTerminal) return@withLock
             session.approvalTimerJob?.cancel()
             session.approvalTimerJob = null
             if (session.fsm.canTransition(TransferEvent.PREPARATION_ERROR)) {
@@ -254,8 +256,9 @@ class ServerTransferSessionManager(
             session.lastErrorCode = errorCode
             session.lastErrorMessage = reason
             tokenManager.revoke(transferId)
+            modified = true
         }
-        publishSnapshots()
+        if (modified) publishSnapshots()
     }
 
     suspend fun beginFileStream(

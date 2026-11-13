@@ -45,7 +45,7 @@
 | `TASK-XFER-002` | `FsapHttpClient` para `TRANSFER_REQUEST` e `ACCEPT`/`REJECT` | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-FSAP-002`, `TASK-FSAP-004` | `DONE` |
 | `TASK-XFER-003` | Upload streaming `TRANSFER_CONTENT` e `TRANSFER_COMPLETE` | 8. Transferência de Arquivos | M2 | P0 | Alta | `TASK-XFER-001`, `TASK-XFER-002` | `DONE` |
 | `TASK-XFER-004` | `TransferProgressTracker` concorrente com throttling (100 ms) | 8. Transferência de Arquivos | M2 | P0 | Média | `TASK-XFER-003`, `TASK-FSAP-003` | `DONE` |
-| `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `TODO` |
+| `TASK-XFER-005` | Cancelamento bilateral `TRANSFER_CANCEL` e limpeza `.part` | 8. Transferência de Arquivos | M2 | P1 | Média | `TASK-XFER-003`, `TASK-DSRV-005` | `DONE` |
 | `TASK-XFER-006` | Tratamento de desconexão abrupta e timeout de stream (15 s) | 8. Transferência de Arquivos | M6 | P0 | Média | `TASK-XFER-004`, `TASK-DSRV-005` | `TODO` |
 | `TASK-SEC-001` | `FileNameSanitizer` contra Path Traversal e não-sobrescrita | 9. Segurança | M1 | P0 | Baixa | `TASK-FSAP-005` | `DONE` |
 | `TASK-SEC-002` | Gerador e validador de `transferToken` efêmero (`SecureRandom`) | 9. Segurança | M2 | P0 | Baixa | `TASK-FSAP-003` | `DONE` |
@@ -661,7 +661,7 @@
   - Cancelamento aos 50% de um arquivo interrompe o tráfego TCP em `< 500 ms` e não deixa nenhum arquivo `.part` no diretório temporário (`TC-FSAP-017`, `TC-FSAP-018`).
 - **Arquivos ou módulos potencialmente envolvidos:** `composeApp/src/commonMain/kotlin/br/edu/fileshare/network/transfer/TransferCoordinator.kt`
 - **Testes necessários:** Casos `TC-FSAP-017` e `TC-FSAP-018`.
-- **Status inicial:** `TODO`
+- **Status inicial:** `DONE`
 
 ### `TASK-XFER-006` — Detector de desconexão abrupta, timeout de leitura (15 s) e recuperação limpa de estado
 - **ID único:** `TASK-XFER-006`

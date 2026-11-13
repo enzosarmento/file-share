@@ -378,10 +378,10 @@ class FsapHttpClient(
         }
 
         val errorInfo = parseErrorPayloadOrFallback(response.status, rawBody)
-        val failureEvent = if (errorInfo.errorCode == FsapErrorCode.APPROVAL_TIMEOUT) {
-            TransferEvent.APPROVAL_TIMEOUT
-        } else {
-            TransferEvent.CONNECTION_LOST
+        val failureEvent = when (errorInfo.errorCode) {
+            FsapErrorCode.APPROVAL_TIMEOUT -> TransferEvent.APPROVAL_TIMEOUT
+            FsapErrorCode.TRANSFER_CANCELLED -> TransferEvent.CANCEL_TRANSFER
+            else -> TransferEvent.CONNECTION_LOST
         }
         stateMachine.transitionIfPossible(failureEvent)
         return PrepareTransferResult.Failed(
@@ -516,8 +516,29 @@ class FsapHttpClient(
             }
             throw cancelled
         } catch (protocolEx: FsapProtocolException) {
+            if (protocolEx.errorCode == FsapErrorCode.CONNECTION_LOST ||
+                protocolEx.errorCode == FsapErrorCode.INVALID_STATE_TRANSITION ||
+                protocolEx.errorCode == FsapErrorCode.UNAUTHORIZED_TRANSFER
+            ) {
+                if (isRemoteSessionCancelled(session)) {
+                    stateMachine.transitionIfPossible(TransferEvent.CANCEL_TRANSFER)
+                    return TransferBatchUploadResult.Cancelled(
+                        transferId = session.transferId,
+                        reason = "Sessao cancelada pelo destinatario.",
+                        stateMachine = stateMachine,
+                    )
+                }
+            }
             return handleBatchFailureException(stateMachine, session.transferId, protocolEx)
         } catch (timeoutEx: HttpRequestTimeoutException) {
+            if (isRemoteSessionCancelled(session)) {
+                stateMachine.transitionIfPossible(TransferEvent.CANCEL_TRANSFER)
+                return TransferBatchUploadResult.Cancelled(
+                    transferId = session.transferId,
+                    reason = "Sessao cancelada pelo destinatario.",
+                    stateMachine = stateMachine,
+                )
+            }
             stateMachine.transitionIfPossible(TransferEvent.STREAM_TIMEOUT)
             return TransferBatchUploadResult.Failed(
                 transferId = session.transferId,
@@ -527,6 +548,14 @@ class FsapHttpClient(
                 cause = timeoutEx,
             )
         } catch (ex: Throwable) {
+            if (isRemoteSessionCancelled(session)) {
+                stateMachine.transitionIfPossible(TransferEvent.CANCEL_TRANSFER)
+                return TransferBatchUploadResult.Cancelled(
+                    transferId = session.transferId,
+                    reason = "Sessao cancelada pelo destinatario.",
+                    stateMachine = stateMachine,
+                )
+            }
             stateMachine.transitionIfPossible(TransferEvent.CONNECTION_LOST)
             return TransferBatchUploadResult.Failed(
                 transferId = session.transferId,
@@ -536,6 +565,19 @@ class FsapHttpClient(
                 cause = ex,
             )
         }
+    }
+
+    private suspend fun isRemoteSessionCancelled(session: PreparedTransferSession): Boolean {
+        val status = runCatching {
+            withTimeoutOrNull(REMOTE_CANCEL_PROBE_TIMEOUT_MS) {
+                queryTransferStatus(
+                    endpoint = session.endpoint,
+                    transferId = session.transferId,
+                    transferToken = session.transferToken,
+                )
+            }
+        }.getOrNull() ?: return false
+        return status.state == TransferState.CANCELLED.name
     }
 
     suspend fun uploadSingleFileContent(
@@ -816,6 +858,7 @@ class FsapHttpClient(
 
     companion object {
         private const val CLIENT_APPROVAL_GRACE_MS = 2_000L
+        private const val REMOTE_CANCEL_PROBE_TIMEOUT_MS = 1_500L
 
         fun createDefaultHttpClient(
             connectTimeoutMs: Long = FsapConstants.T_TCP_CONNECT_TIMEOUT_MS,
@@ -847,6 +890,7 @@ class FsapHttpClient(
             409 -> FsapErrorCode.INVALID_STATE_TRANSITION
             413 -> FsapErrorCode.FILE_TOO_LARGE
             422 -> FsapErrorCode.HASH_MISMATCH
+            499 -> FsapErrorCode.TRANSFER_CANCELLED
             505 -> FsapErrorCode.UNSUPPORTED_VERSION
             507 -> FsapErrorCode.INSUFFICIENT_STORAGE
             else -> FsapErrorCode.CONNECTION_LOST
